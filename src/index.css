@@ -2,57 +2,88 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/* Earth Learners League Design System - Nature-inspired environmental education platform
+All colors MUST be HSL for consistency and theming.
 */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Nature-inspired color palette */
+    --background: 180 20% 98%;
+    --foreground: 160 15% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 160 15% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 160 15% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary: Vibrant emerald green for environmental theme */
+    --primary: 152 76% 36%;
+    --primary-foreground: 0 0% 98%;
+    --primary-hover: 152 76% 30%;
+    --primary-glow: 152 76% 50%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary: Fresh nature green */
+    --secondary: 120 40% 95%;
+    --secondary-foreground: 160 15% 15%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 120 30% 96%;
+    --muted-foreground: 160 10% 45%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent: Sky blue for diversity */
+    --accent: 200 95% 85%;
+    --accent-foreground: 160 15% 15%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 120 20% 90%;
+    --input: 120 20% 95%;
+    --ring: 152 76% 36%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 98%;
+    /* Success states for gamification */
+    --success: 152 76% 36%;
+    --success-foreground: 0 0% 98%;
+    --success-muted: 152 50% 90%;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
+    /* Warning for eco-alerts */
+    --warning: 45 93% 47%;
+    --warning-foreground: 0 0% 98%;
+    --warning-muted: 45 93% 90%;
 
-    --sidebar-primary: 240 5.9% 10%;
+    /* Info for educational content */
+    --info: 200 95% 50%;
+    --info-foreground: 0 0% 98%;
+    --info-muted: 200 95% 90%;
 
+    /* Gradients for environmental themes */
+    --gradient-eco: linear-gradient(135deg, hsl(152 76% 36%), hsl(120 60% 40%));
+    --gradient-sky: linear-gradient(135deg, hsl(200 95% 50%), hsl(180 60% 60%));
+    --gradient-earth: linear-gradient(135deg, hsl(30 60% 50%), hsl(45 80% 60%));
+    --gradient-hero: linear-gradient(135deg, hsl(152 76% 36%), hsl(200 95% 50%));
+    --gradient-card: linear-gradient(145deg, hsla(0 0% 100% / 0.8), hsla(120 30% 96% / 0.4));
+
+    /* Shadows with eco theme */
+    --shadow-eco: 0 10px 30px -10px hsl(152 76% 36% / 0.3);
+    --shadow-gentle: 0 4px 20px -4px hsl(160 15% 15% / 0.1);
+    --shadow-card: 0 2px 10px -2px hsl(160 15% 15% / 0.05);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    /* Sidebar with eco theme */
+    --sidebar-background: 152 30% 97%;
+    --sidebar-foreground: 160 15% 25%;
+    --sidebar-primary: 152 76% 36%;
     --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 120 40% 95%;
+    --sidebar-accent-foreground: 160 15% 15%;
+    --sidebar-border: 120 20% 88%;
+    --sidebar-ring: 152 76% 36%;
   }
 
   .dark {

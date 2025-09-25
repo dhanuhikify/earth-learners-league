@@ -14,7 +14,261 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      assignments: {
+        Row: {
+          created_at: string
+          description: string
+          due_date: string | null
+          eco_points_reward: number | null
+          id: string
+          teacher_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          due_date?: string | null
+          eco_points_reward?: number | null
+          id?: string
+          teacher_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          due_date?: string | null
+          eco_points_reward?: number | null
+          id?: string
+          teacher_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assignments_teacher_id_fkey"
+            columns: ["teacher_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      educational_content: {
+        Row: {
+          content_type: string
+          content_url: string | null
+          created_at: string
+          description: string
+          difficulty_level: string | null
+          eco_points_reward: number | null
+          id: string
+          is_active: boolean | null
+          tags: string[] | null
+          thumbnail_url: string | null
+          title: string
+        }
+        Insert: {
+          content_type: string
+          content_url?: string | null
+          created_at?: string
+          description: string
+          difficulty_level?: string | null
+          eco_points_reward?: number | null
+          id?: string
+          is_active?: boolean | null
+          tags?: string[] | null
+          thumbnail_url?: string | null
+          title: string
+        }
+        Update: {
+          content_type?: string
+          content_url?: string | null
+          created_at?: string
+          description?: string
+          difficulty_level?: string | null
+          eco_points_reward?: number | null
+          id?: string
+          is_active?: boolean | null
+          tags?: string[] | null
+          thumbnail_url?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
+      posts: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          image_url: string | null
+          is_featured: boolean | null
+          organization_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean | null
+          organization_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean | null
+          organization_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          achievements: string[] | null
+          avatar_url: string | null
+          created_at: string
+          eco_points: number | null
+          email: string
+          full_name: string
+          grade_level: string | null
+          id: string
+          role: string
+          school_name: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          achievements?: string[] | null
+          avatar_url?: string | null
+          created_at?: string
+          eco_points?: number | null
+          email: string
+          full_name: string
+          grade_level?: string | null
+          id?: string
+          role: string
+          school_name?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          achievements?: string[] | null
+          avatar_url?: string | null
+          created_at?: string
+          eco_points?: number | null
+          email?: string
+          full_name?: string
+          grade_level?: string | null
+          id?: string
+          role?: string
+          school_name?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reports: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          report_data: Json | null
+          teacher_id: string
+          title: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          report_data?: Json | null
+          teacher_id: string
+          title: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          report_data?: Json | null
+          teacher_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reports_teacher_id_fkey"
+            columns: ["teacher_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      submissions: {
+        Row: {
+          assignment_id: string
+          content: string
+          eco_points_earned: number | null
+          file_url: string | null
+          grade: string | null
+          id: string
+          student_id: string
+          submitted_at: string
+          teacher_feedback: string | null
+        }
+        Insert: {
+          assignment_id: string
+          content: string
+          eco_points_earned?: number | null
+          file_url?: string | null
+          grade?: string | null
+          id?: string
+          student_id: string
+          submitted_at?: string
+          teacher_feedback?: string | null
+        }
+        Update: {
+          assignment_id?: string
+          content?: string
+          eco_points_earned?: number | null
+          file_url?: string | null
+          grade?: string | null
+          id?: string
+          student_id?: string
+          submitted_at?: string
+          teacher_feedback?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submissions_assignment_id_fkey"
+            columns: ["assignment_id"]
+            isOneToOne: false
+            referencedRelation: "assignments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "submissions_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

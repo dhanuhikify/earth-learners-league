@@ -23,6 +23,8 @@ import {
   Clock
 } from 'lucide-react';
 import { format } from 'date-fns';
+import Leaderboard from '@/components/Leaderboard';
+import heroImage from '@/assets/education-hero.jpg';
 
 interface Assignment {
   id: string;
@@ -168,6 +170,30 @@ export default function StudentDashboard() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Hero Section */}
+      <div 
+        className="relative h-64 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${heroImage})` }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30" />
+        <div className="relative container mx-auto px-4 h-full flex items-center">
+          <div className="text-white">
+            <h1 className="text-4xl font-bold mb-2">Welcome, {profile?.full_name}!</h1>
+            <p className="text-lg opacity-90">Continue your environmental learning journey</p>
+            <div className="flex items-center gap-2 mt-4 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
+              <Trophy className="h-5 w-5 text-yellow-400" />
+              <span className="font-semibold text-yellow-400">{profile?.eco_points || 0} Eco Points</span>
+            </div>
+          </div>
+          <div className="absolute top-4 right-4">
+            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-white border-white/20 hover:bg-white/10">
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
+            </Button>
+          </div>
+        </div>
+      </div>
+
       {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4">
@@ -175,21 +201,9 @@ export default function StudentDashboard() {
             <div className="flex items-center gap-3">
               <Leaf className="h-8 w-8 text-primary" />
               <div>
-                <h1 className="text-2xl font-bold">Welcome back, {profile?.full_name}!</h1>
-                <p className="text-muted-foreground">Ready to learn and save the planet?</p>
+                <h2 className="text-2xl font-bold">Dashboard</h2>
+                <p className="text-muted-foreground">Explore, Learn, and Earn Eco Points</p>
               </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 bg-gradient-eco px-3 py-1 rounded-full">
-                <Trophy className="h-4 w-4 text-primary-foreground" />
-                <span className="text-sm font-semibold text-primary-foreground">
-                  {profile?.eco_points} Eco Points
-                </span>
-              </div>
-              <Button variant="ghost" size="sm" onClick={handleLogout}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Logout
-              </Button>
             </div>
           </div>
         </div>
@@ -197,9 +211,10 @@ export default function StudentDashboard() {
 
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="learn" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="learn">Learn</TabsTrigger>
             <TabsTrigger value="assignments">Assignments</TabsTrigger>
+            <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
             <TabsTrigger value="announcements">Announcements</TabsTrigger>
             <TabsTrigger value="progress">Progress</TabsTrigger>
           </TabsList>
@@ -309,6 +324,16 @@ export default function StudentDashboard() {
                   </Card>
                 )}
               </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="leaderboard" className="space-y-6">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <Trophy className="h-6 w-6 text-primary" />
+                <h2 className="text-2xl font-bold">Eco Champions</h2>
+              </div>
+              <Leaderboard />
             </div>
           </TabsContent>
 

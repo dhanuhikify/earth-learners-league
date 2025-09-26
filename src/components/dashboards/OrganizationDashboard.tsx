@@ -13,15 +13,18 @@ import { useToast } from '@/hooks/use-toast';
 import PostContent from '@/components/PostContent';
 import { 
   Leaf, 
+  Users, 
   FileText, 
   Plus,
   LogOut,
+  Send,
   TrendingUp,
-  Users,
-  BookOpen,
-  Eye,
-  Calendar
+  Award,
+  Target,
+  Trophy
 } from 'lucide-react';
+import Leaderboard from '@/components/Leaderboard';
+import heroImage from '@/assets/education-hero.jpg';
 import { format } from 'date-fns';
 
 interface Post {
@@ -72,7 +75,6 @@ export default function OrganizationDashboard() {
 
   const fetchData = async () => {
     try {
-      // Fetch organization's posts
       const { data: postsData, error: postsError } = await supabase
         .from('posts')
         .select('*')
@@ -81,7 +83,6 @@ export default function OrganizationDashboard() {
 
       if (postsError) throw postsError;
 
-      // Fetch reports from teachers
       const { data: reportsData, error: reportsError } = await supabase
         .from('reports')
         .select(`
@@ -92,7 +93,6 @@ export default function OrganizationDashboard() {
 
       if (reportsError) throw reportsError;
 
-      // Fetch dashboard statistics
       const [studentsRes, teachersRes, assignmentsRes] = await Promise.all([
         supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'student'),
         supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'teacher'),
@@ -182,26 +182,23 @@ export default function OrganizationDashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card/50 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Leaf className="h-8 w-8 text-primary" />
-              <div>
-                <h1 className="text-2xl font-bold">Organization Dashboard</h1>
-                <p className="text-muted-foreground">Welcome, {profile?.full_name}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="sm" onClick={handleLogout}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Logout
-              </Button>
-            </div>
+      {/* Hero Section */}
+      <div 
+        className="relative h-48 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${heroImage})` }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-green-900/80 to-green-700/60" />
+        <div className="relative container mx-auto px-4 h-full flex items-center justify-between">
+          <div className="text-white">
+            <h1 className="text-3xl font-bold mb-2">Organization Dashboard</h1>
+            <p className="text-lg opacity-90">Welcome, {profile?.full_name}</p>
           </div>
+          <Button variant="ghost" size="sm" onClick={handleLogout} className="text-white border-white/20 hover:bg-white/10">
+            <LogOut className="h-4 w-4 mr-2" />
+            Logout
+          </Button>
         </div>
-      </header>
+      </div>
 
       <div className="container mx-auto px-4 py-8">
         {/* Stats Overview */}
@@ -213,21 +210,17 @@ export default function OrganizationDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.totalStudents}</div>
-              <p className="text-xs text-muted-foreground">
-                Enrolled in the platform
-              </p>
+              <p className="text-xs text-muted-foreground">Enrolled in the platform</p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Teachers</CardTitle>
-              <BookOpen className="h-4 w-4 text-muted-foreground" />
+              <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.totalTeachers}</div>
-              <p className="text-xs text-muted-foreground">
-                Active educators
-              </p>
+              <p className="text-xs text-muted-foreground">Active educators</p>
             </CardContent>
           </Card>
           <Card>
@@ -237,9 +230,7 @@ export default function OrganizationDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.totalAssignments}</div>
-              <p className="text-xs text-muted-foreground">
-                Created by teachers
-              </p>
+              <p className="text-xs text-muted-foreground">Created by teachers</p>
             </CardContent>
           </Card>
           <Card>
@@ -249,17 +240,16 @@ export default function OrganizationDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.totalPosts}</div>
-              <p className="text-xs text-muted-foreground">
-                Announcements shared
-              </p>
+              <p className="text-xs text-muted-foreground">Announcements shared</p>
             </CardContent>
           </Card>
         </div>
 
         <Tabs defaultValue="posts" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="posts">Posts & Announcements</TabsTrigger>
-            <TabsTrigger value="reports">Teacher Reports</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="posts">Posts</TabsTrigger>
+            <TabsTrigger value="reports">Reports</TabsTrigger>
+            <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
           </TabsList>
 
           <TabsContent value="posts" className="space-y-6">
@@ -341,35 +331,20 @@ export default function OrganizationDashboard() {
                           Published {format(new Date(post.created_at), 'MMM dd, yyyy')}
                         </CardDescription>
                       </div>
-                      <Button variant="ghost" size="sm">
-                        <Eye className="h-4 w-4 mr-2" />
-                        View
-                      </Button>
                     </div>
                   </CardHeader>
-                    <CardContent>
-                      <PostContent content={post.content} />
-                      {post.image_url && (
-                        <img
-                          src={post.image_url}
-                          alt={post.title}
-                          className="mt-4 rounded-lg max-w-full h-auto max-h-48 object-cover"
-                        />
-                      )}
-                    </CardContent>
-                </Card>
-              ))}
-              {posts.length === 0 && (
-                <Card>
-                  <CardContent className="text-center py-8">
-                    <FileText className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                    <p className="text-muted-foreground">No posts created yet.</p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Create your first post to share with the community!
-                    </p>
+                  <CardContent>
+                    <PostContent content={post.content} />
+                    {post.image_url && (
+                      <img
+                        src={post.image_url}
+                        alt={post.title}
+                        className="mt-4 rounded-lg max-w-full h-auto max-h-48 object-cover"
+                      />
+                    )}
                   </CardContent>
                 </Card>
-              )}
+              ))}
             </div>
           </TabsContent>
 
@@ -380,64 +355,27 @@ export default function OrganizationDashboard() {
                 {reports.map((report) => (
                   <Card key={report.id}>
                     <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <CardTitle>{report.title}</CardTitle>
-                          <CardDescription>
-                            From {report.profiles?.full_name} ({report.profiles?.email})
-                          </CardDescription>
-                        </div>
-                        <Badge variant="outline" className="flex items-center gap-1">
-                          <Calendar className="h-3 w-3" />
-                          {format(new Date(report.created_at), 'MMM dd')}
-                        </Badge>
-                      </div>
+                      <CardTitle>{report.title}</CardTitle>
+                      <CardDescription>
+                        From {report.profiles?.full_name}
+                      </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-sm mb-4">{report.content}</p>
-                      {report.report_data && (
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-muted rounded-lg">
-                          <div className="text-center">
-                            <div className="text-lg font-semibold">
-                              {report.report_data.totalAssignments || 0}
-                            </div>
-                            <div className="text-xs text-muted-foreground">Assignments</div>
-                          </div>
-                          <div className="text-center">
-                            <div className="text-lg font-semibold">
-                              {report.report_data.totalSubmissions || 0}
-                            </div>
-                            <div className="text-xs text-muted-foreground">Submissions</div>
-                          </div>
-                          <div className="text-center">
-                            <div className="text-lg font-semibold">
-                              {report.report_data.totalStudents || 0}
-                            </div>
-                            <div className="text-xs text-muted-foreground">Students</div>
-                          </div>
-                          <div className="text-center">
-                            <div className="text-lg font-semibold">
-                              {Math.round(report.report_data.averagePoints || 0)}
-                            </div>
-                            <div className="text-xs text-muted-foreground">Avg Points</div>
-                          </div>
-                        </div>
-                      )}
+                      <p className="text-sm">{report.content}</p>
                     </CardContent>
                   </Card>
                 ))}
-                {reports.length === 0 && (
-                  <Card>
-                    <CardContent className="text-center py-8">
-                      <FileText className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                      <p className="text-muted-foreground">No reports received yet.</p>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Teachers will submit progress reports here.
-                      </p>
-                    </CardContent>
-                  </Card>
-                )}
               </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="leaderboard" className="space-y-6">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <Trophy className="h-6 w-6 text-primary" />
+                <h2 className="text-2xl font-bold">Student Leaderboard</h2>
+              </div>
+              <Leaderboard />
             </div>
           </TabsContent>
         </Tabs>

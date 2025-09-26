@@ -20,8 +20,11 @@ import {
   Calendar,
   CheckCircle,
   Clock,
-  Send
+  Send,
+  Trophy
 } from 'lucide-react';
+import GradeSubmissionDialog from '@/components/GradeSubmissionDialog';
+import Leaderboard from '@/components/Leaderboard';
 import { format } from 'date-fns';
 
 interface Assignment {
@@ -40,6 +43,7 @@ interface Submission {
   grade: string | null;
   student_id: string;
   assignment_id: string;
+  eco_points_earned: number;
   profiles: {
     full_name: string;
     email: string;
@@ -76,6 +80,8 @@ export default function TeacherDashboard() {
   const [loading, setLoading] = useState(true);
   const [showCreateAssignment, setShowCreateAssignment] = useState(false);
   const [showCreateReport, setShowCreateReport] = useState(false);
+  const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
+  const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -311,10 +317,11 @@ export default function TeacherDashboard() {
 
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="assignments" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="assignments">Assignments</TabsTrigger>
             <TabsTrigger value="submissions">Submissions</TabsTrigger>
             <TabsTrigger value="students">Students</TabsTrigger>
+            <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
             <TabsTrigger value="announcements">Announcements</TabsTrigger>
           </TabsList>
 
@@ -461,10 +468,28 @@ export default function TeacherDashboard() {
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm mb-4">{submission.content}</p>
-                      {!submission.grade && (
-                        <Button variant="outline" size="sm">
+                      {!submission.grade ? (
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => {
+                            setSelectedSubmission(submission);
+                            const assignment = assignments.find(a => a.id === submission.assignment_id);
+                            setSelectedAssignment(assignment || null);
+                          }}
+                        >
                           Grade Submission
                         </Button>
+                      ) : (
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium">Grade:</span>
+                            <Badge className="bg-success">{submission.grade}</Badge>
+                          </div>
+                          <div className="text-sm">
+                            <span className="font-medium">Eco Points Earned:</span> {submission.eco_points_earned}
+                          </div>
+                        </div>
                       )}
                     </CardContent>
                   </Card>
@@ -525,6 +550,16 @@ export default function TeacherDashboard() {
             </div>
           </TabsContent>
 
+          <TabsContent value="leaderboard" className="space-y-6">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <Trophy className="h-6 w-6 text-primary" />
+                <h2 className="text-2xl font-bold">Student Leaderboard</h2>
+              </div>
+              <Leaderboard />
+            </div>
+          </TabsContent>
+
           <TabsContent value="announcements" className="space-y-6">
             <div>
               <h2 className="text-2xl font-bold mb-4">Organization Announcements</h2>
@@ -564,6 +599,26 @@ export default function TeacherDashboard() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Grade Submission Dialog */}
+      {selectedSubmission && selectedAssignment && (
+        <GradeSubmissionDialog
+          submission={selectedSubmission}
+          assignment={selectedAssignment}
+          open={!!selectedSubmission}
+          onOpenChange={(open) => {
+            if (!open) {
+              setSelectedSubmission(null);
+              setSelectedAssignment(null);
+            }
+          }}
+          onGradeComplete={() => {
+            fetchData();
+            setSelectedSubmission(null);
+            setSelectedAssignment(null);
+          }}
+        />
+      )}
     </div>
   );
 }

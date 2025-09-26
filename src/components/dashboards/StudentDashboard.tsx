@@ -7,6 +7,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import SubmissionDialog from '@/components/SubmissionDialog';
+import EducationalContentDialog from '@/components/EducationalContentDialog';
+import PostContent from '@/components/PostContent';
 import { 
   Leaf, 
   Trophy, 
@@ -60,6 +63,8 @@ export default function StudentDashboard() {
   const [educationalContent, setEducationalContent] = useState<EducationalContent[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
+  const [selectedContent, setSelectedContent] = useState<EducationalContent | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -241,7 +246,11 @@ export default function StudentDashboard() {
                           <Star className="h-4 w-4" />
                           {content.eco_points_reward} points
                         </div>
-                        <Button variant="eco" size="sm">
+                        <Button 
+                          variant="eco" 
+                          size="sm"
+                          onClick={() => setSelectedContent(content)}
+                        >
                           Start Learning
                         </Button>
                       </div>
@@ -280,10 +289,14 @@ export default function StudentDashboard() {
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <Button variant="outline" className="flex items-center gap-2">
-                        <Upload className="h-4 w-4" />
-                        Submit Assignment
-                      </Button>
+                        <Button 
+                          variant="outline" 
+                          className="flex items-center gap-2"
+                          onClick={() => setSelectedAssignment(assignment)}
+                        >
+                          <Upload className="h-4 w-4" />
+                          Submit Assignment
+                        </Button>
                     </CardContent>
                   </Card>
                 ))}
@@ -312,7 +325,7 @@ export default function StudentDashboard() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-sm">{post.content}</p>
+                      <PostContent content={post.content} />
                       {post.image_url && (
                         <img
                           src={post.image_url}
@@ -387,6 +400,25 @@ export default function StudentDashboard() {
           </TabsContent>
         </Tabs>
       </div>
+      
+      {/* Dialogs */}
+      {selectedAssignment && (
+        <SubmissionDialog
+          assignment={selectedAssignment}
+          open={!!selectedAssignment}
+          onOpenChange={(open) => !open && setSelectedAssignment(null)}
+          onSubmissionComplete={fetchData}
+        />
+      )}
+      
+      {selectedContent && (
+        <EducationalContentDialog
+          content={selectedContent}
+          open={!!selectedContent}
+          onOpenChange={(open) => !open && setSelectedContent(null)}
+          onContentComplete={fetchData}
+        />
+      )}
     </div>
   );
 }

@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import PostContent from '@/components/PostContent';
 import { 
   Leaf, 
   Users, 
@@ -54,12 +55,24 @@ interface StudentProfile {
   grade_level: string | null;
 }
 
+interface Post {
+  id: string;
+  title: string;
+  content: string;
+  image_url: string | null;
+  created_at: string;
+  profiles: {
+    full_name: string;
+  };
+}
+
 export default function TeacherDashboard() {
   const { profile, signOut } = useAuth();
   const { toast } = useToast();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [students, setStudents] = useState<StudentProfile[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateAssignment, setShowCreateAssignment] = useState(false);
   const [showCreateReport, setShowCreateReport] = useState(false);
@@ -100,9 +113,22 @@ export default function TeacherDashboard() {
 
       if (studentsError) throw studentsError;
 
+      // Fetch organization posts
+      const { data: postsData, error: postsError } = await supabase
+        .from('posts')
+        .select(`
+          *,
+          profiles!posts_organization_id_fkey(full_name)
+        `)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (postsError) throw postsError;
+
       setAssignments(assignmentsData || []);
       setSubmissions(submissionsData || []);
       setStudents(studentsData || []);
+      setPosts(postsData || []);
     } catch (error) {
       console.error('Error fetching data:', error);
       toast({
@@ -285,10 +311,11 @@ export default function TeacherDashboard() {
 
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="assignments" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="assignments">Assignments</TabsTrigger>
             <TabsTrigger value="submissions">Submissions</TabsTrigger>
             <TabsTrigger value="students">Students</TabsTrigger>
+            <TabsTrigger value="announcements">Announcements</TabsTrigger>
           </TabsList>
 
           <TabsContent value="assignments" className="space-y-6">
@@ -491,6 +518,44 @@ export default function TeacherDashboard() {
                     <CardContent className="text-center py-8">
                       <Users className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
                       <p className="text-muted-foreground">No students found.</p>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="announcements" className="space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold mb-4">Organization Announcements</h2>
+              <div className="space-y-4">
+                {posts.map((post) => (
+                  <Card key={post.id}>
+                    <CardHeader>
+                      <CardTitle>{post.title}</CardTitle>
+                      <CardDescription>
+                        By {post.profiles?.full_name} • {format(new Date(post.created_at), 'MMM dd, yyyy')}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                    <CardContent>
+                      <PostContent content={post.content} />
+                      {post.image_url && (
+                        <img
+                          src={post.image_url}
+                          alt={post.title}
+                          className="mt-4 rounded-lg max-w-full h-auto"
+                        />
+                      )}
+                    </CardContent>
+                    </CardContent>
+                  </Card>
+                ))}
+                {posts.length === 0 && (
+                  <Card>
+                    <CardContent className="text-center py-8">
+                      <FileText className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                      <p className="text-muted-foreground">No announcements yet.</p>
                     </CardContent>
                   </Card>
                 )}

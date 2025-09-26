@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import PostContent from '@/components/PostContent';
 import { 
   Leaf, 
   FileText, 
@@ -346,16 +347,16 @@ export default function OrganizationDashboard() {
                       </Button>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <p className="text-sm mb-4">{post.content}</p>
-                    {post.image_url && (
-                      <img
-                        src={post.image_url}
-                        alt={post.title}
-                        className="rounded-lg max-w-full h-auto max-h-48 object-cover"
-                      />
-                    )}
-                  </CardContent>
+                    <CardContent>
+                      <PostContent content={post.content} />
+                      {post.image_url && (
+                        <img
+                          src={post.image_url}
+                          alt={post.title}
+                          className="mt-4 rounded-lg max-w-full h-auto max-h-48 object-cover"
+                        />
+                      )}
+                    </CardContent>
                 </Card>
               ))}
               {posts.length === 0 && (

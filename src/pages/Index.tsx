@@ -21,7 +21,7 @@ const Index = () => {
           <div className="flex items-center justify-center gap-3 mb-8">
             <Leaf className="h-12 w-12 text-primary-foreground" />
             <h1 className="text-5xl font-bold text-primary-foreground">
-              Earth Learners League
+              EcoLearn
             </h1>
           </div>
           

@@ -130,7 +130,7 @@ export default function Auth() {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Leaf className="h-8 w-8 text-primary-foreground" />
-            <h1 className="text-3xl font-bold text-primary-foreground">Earth Learners League</h1>
+            <h1 className="text-3xl font-bold text-primary-foreground">EcoLearn</h1>
           </div>
           <p className="text-primary-foreground/80">
             Gamified environmental education for a sustainable future

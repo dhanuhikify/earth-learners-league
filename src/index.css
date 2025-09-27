@@ -2,14 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Earth Learners League Design System - Nature-inspired environmental education platform
+/* EcoLearn Design System - Nature-inspired environmental education platform
 All colors MUST be HSL for consistency and theming.
 */
 
 @layer base {
   :root {
-    /* Nature-inspired color palette */
-    --background: 180 20% 98%;
+    /* Enhanced Nature-inspired color palette with more vibrant colors */
+    --background: 145 25% 97%;
     --foreground: 160 15% 15%;
 
     --card: 0 0% 100%;
@@ -44,7 +44,7 @@ All colors MUST be HSL for consistency and theming.
 
     --radius: 0.75rem;
 
-    /* Success states for gamification */
+    /* Enhanced Success states for gamification */
     --success: 152 76% 36%;
     --success-foreground: 0 0% 98%;
     --success-muted: 152 50% 90%;
@@ -59,23 +59,28 @@ All colors MUST be HSL for consistency and theming.
     --info-foreground: 0 0% 98%;
     --info-muted: 200 95% 90%;
 
-    /* Gradients for environmental themes */
-    --gradient-eco: linear-gradient(135deg, hsl(152 76% 36%), hsl(120 60% 40%));
-    --gradient-sky: linear-gradient(135deg, hsl(200 95% 50%), hsl(180 60% 60%));
-    --gradient-earth: linear-gradient(135deg, hsl(30 60% 50%), hsl(45 80% 60%));
-    --gradient-hero: linear-gradient(135deg, hsl(152 76% 36%), hsl(200 95% 50%));
-    --gradient-card: linear-gradient(145deg, hsla(0 0% 100% / 0.8), hsla(120 30% 96% / 0.4));
+    /* Enhanced Gradients for environmental themes */
+    --gradient-eco: linear-gradient(135deg, hsl(152 76% 36%), hsl(120 60% 40%), hsl(180 60% 45%));
+    --gradient-sky: linear-gradient(135deg, hsl(200 95% 50%), hsl(180 60% 60%), hsl(220 70% 65%));
+    --gradient-earth: linear-gradient(135deg, hsl(30 60% 50%), hsl(45 80% 60%), hsl(60 70% 55%));
+    --gradient-hero: linear-gradient(135deg, hsl(152 76% 36%), hsl(200 95% 50%), hsl(270 60% 60%));
+    --gradient-card: linear-gradient(145deg, hsla(0 0% 100% / 0.9), hsla(120 30% 96% / 0.6));
+    --gradient-ocean: linear-gradient(135deg, hsl(190 95% 45%), hsl(210 85% 55%));
+    --gradient-forest: linear-gradient(135deg, hsl(140 70% 30%), hsl(120 60% 40%));
+    --gradient-sunset: linear-gradient(135deg, hsl(25 90% 60%), hsl(40 95% 65%));
 
-    /* Shadows with eco theme */
-    --shadow-eco: 0 10px 30px -10px hsl(152 76% 36% / 0.3);
-    --shadow-gentle: 0 4px 20px -4px hsl(160 15% 15% / 0.1);
-    --shadow-card: 0 2px 10px -2px hsl(160 15% 15% / 0.05);
+    /* Enhanced Shadows with eco theme */
+    --shadow-eco: 0 15px 40px -10px hsl(152 76% 36% / 0.4);
+    --shadow-gentle: 0 6px 25px -4px hsl(160 15% 15% / 0.15);
+    --shadow-card: 0 4px 15px -2px hsl(160 15% 15% / 0.1);
+    --shadow-glow: 0 0 30px hsl(152 76% 50% / 0.3);
 
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --transition-spring: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
-    /* Sidebar with eco theme */
+    /* Enhanced Sidebar with eco theme */
     --sidebar-background: 152 30% 97%;
     --sidebar-foreground: 160 15% 25%;
     --sidebar-primary: 152 76% 36%;

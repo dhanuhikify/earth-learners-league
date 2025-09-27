@@ -169,24 +169,24 @@ export default function StudentDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section */}
+    <div className="min-h-screen bg-gradient-to-br from-background via-accent/10 to-success-muted/20">
+      {/* Enhanced Hero Section */}
       <div 
         className="relative h-64 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${heroImage})` }}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-info/60" />
         <div className="relative container mx-auto px-4 h-full flex items-center">
           <div className="text-white">
-            <h1 className="text-4xl font-bold mb-2">Welcome, {profile?.full_name}!</h1>
+            <h1 className="text-4xl font-bold mb-2">Welcome, {profile?.full_name}! 🌱</h1>
             <p className="text-lg opacity-90">Continue your environmental learning journey</p>
-            <div className="flex items-center gap-2 mt-4 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
-              <Trophy className="h-5 w-5 text-yellow-400" />
-              <span className="font-semibold text-yellow-400">{profile?.eco_points || 0} Eco Points</span>
+            <div className="flex items-center gap-2 mt-4 bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full shadow-glow">
+              <Trophy className="h-6 w-6 text-yellow-400 animate-pulse" />
+              <span className="font-semibold text-yellow-400 text-lg">{profile?.eco_points || 0} Eco Points</span>
             </div>
           </div>
           <div className="absolute top-4 right-4">
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-white border-white/20 hover:bg-white/10">
+            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-white border-white/30 hover:bg-white/20 backdrop-blur-sm">
               <LogOut className="h-4 w-4 mr-2" />
               Logout
             </Button>
@@ -194,15 +194,17 @@ export default function StudentDashboard() {
         </div>
       </div>
 
-      {/* Header */}
-      <header className="border-b bg-card/50 backdrop-blur-sm">
+      {/* Enhanced Header */}
+      <header className="border-b bg-gradient-card backdrop-blur-sm shadow-gentle">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Leaf className="h-8 w-8 text-primary" />
+              <div className="p-2 bg-gradient-eco rounded-full shadow-eco">
+                <Leaf className="h-8 w-8 text-white" />
+              </div>
               <div>
-                <h2 className="text-2xl font-bold">Dashboard</h2>
-                <p className="text-muted-foreground">Explore, Learn, and Earn Eco Points</p>
+                <h2 className="text-2xl font-bold bg-gradient-eco bg-clip-text text-transparent">Dashboard</h2>
+                <p className="text-muted-foreground">Explore, Learn, and Earn Eco Points 🌟</p>
               </div>
             </div>
           </div>
@@ -211,62 +213,93 @@ export default function StudentDashboard() {
 
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="learn" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="learn">Learn</TabsTrigger>
-            <TabsTrigger value="assignments">Assignments</TabsTrigger>
-            <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
-            <TabsTrigger value="announcements">Announcements</TabsTrigger>
-            <TabsTrigger value="progress">Progress</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-5 bg-white/90 backdrop-blur-sm shadow-card p-1 rounded-xl">
+            <TabsTrigger 
+              value="learn" 
+              className="data-[state=active]:bg-gradient-eco data-[state=active]:text-white transition-all rounded-lg"
+            >
+              🎓 Learn
+            </TabsTrigger>
+            <TabsTrigger 
+              value="assignments" 
+              className="data-[state=active]:bg-gradient-sky data-[state=active]:text-white transition-all rounded-lg"
+            >
+              📝 Tasks
+            </TabsTrigger>
+            <TabsTrigger 
+              value="leaderboard" 
+              className="data-[state=active]:bg-gradient-earth data-[state=active]:text-white transition-all rounded-lg"
+            >
+              🏆 Leaders
+            </TabsTrigger>
+            <TabsTrigger 
+              value="announcements" 
+              className="data-[state=active]:bg-gradient-sunset data-[state=active]:text-white transition-all rounded-lg"
+            >
+              📢 News
+            </TabsTrigger>
+            <TabsTrigger 
+              value="progress" 
+              className="data-[state=active]:bg-gradient-forest data-[state=active]:text-white transition-all rounded-lg"
+            >
+              📊 Stats
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="learn" className="space-y-6">
             <div>
-              <h2 className="text-2xl font-bold mb-4">Educational Content</h2>
+              <h2 className="text-2xl font-bold mb-4 bg-gradient-eco bg-clip-text text-transparent">
+                🎓 Educational Content
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {educationalContent.map((content) => (
-                  <Card key={content.id} className="group hover:shadow-gentle transition-all duration-300">
+                  <Card key={content.id} className="group hover:shadow-eco transition-all duration-300 hover:scale-[1.02] bg-gradient-card backdrop-blur-sm">
                     <div className="aspect-video relative overflow-hidden rounded-t-lg">
                       {content.thumbnail_url ? (
                         <img
                           src={content.thumbnail_url}
                           alt={content.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                         />
                       ) : (
                         <div className="w-full h-full bg-gradient-eco flex items-center justify-center">
-                          {getContentIcon(content.content_type)}
+                          <div className="text-white text-4xl">
+                            {getContentIcon(content.content_type)}
+                          </div>
                         </div>
                       )}
                       <div className="absolute top-2 right-2">
-                        <Badge variant="secondary" className="flex items-center gap-1">
+                        <Badge variant="secondary" className="flex items-center gap-1 bg-white/90 backdrop-blur-sm">
                           {getContentIcon(content.content_type)}
                           {content.content_type}
                         </Badge>
                       </div>
                       {content.difficulty_level && (
                         <div className="absolute bottom-2 left-2">
-                          <Badge className={getDifficultyColor(content.difficulty_level)}>
+                          <Badge className={`${getDifficultyColor(content.difficulty_level)} text-white shadow-gentle`}>
                             {content.difficulty_level}
                           </Badge>
                         </div>
                       )}
                     </div>
                     <CardHeader>
-                      <CardTitle className="text-lg">{content.title}</CardTitle>
-                      <CardDescription>{content.description}</CardDescription>
+                      <CardTitle className="text-lg text-foreground">{content.title}</CardTitle>
+                      <CardDescription className="text-muted-foreground">{content.description}</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1 text-sm text-success">
-                          <Star className="h-4 w-4" />
-                          {content.eco_points_reward} points
+                        <div className="flex items-center gap-1 text-sm font-semibold">
+                          <div className="p-1 bg-gradient-eco rounded-full">
+                            <Star className="h-3 w-3 text-white" />
+                          </div>
+                          <span className="text-success">{content.eco_points_reward} points</span>
                         </div>
                         <Button 
-                          variant="eco" 
+                          className="bg-gradient-eco hover:shadow-eco text-white transition-all"
                           size="sm"
                           onClick={() => setSelectedContent(content)}
                         >
-                          Start Learning
+                          Start Learning 🚀
                         </Button>
                       </div>
                     </CardContent>
@@ -278,48 +311,52 @@ export default function StudentDashboard() {
 
           <TabsContent value="assignments" className="space-y-6">
             <div>
-              <h2 className="text-2xl font-bold mb-4">Assignments</h2>
+              <h2 className="text-2xl font-bold mb-4 bg-gradient-sky bg-clip-text text-transparent">
+                📝 Your Assignments
+              </h2>
               <div className="space-y-4">
                 {assignments.map((assignment) => (
-                  <Card key={assignment.id}>
+                  <Card key={assignment.id} className="bg-gradient-card hover:shadow-eco transition-all hover:scale-[1.01]">
                     <CardHeader>
                       <div className="flex items-start justify-between">
                         <div>
-                          <CardTitle>{assignment.title}</CardTitle>
-                          <CardDescription className="mt-2">
+                          <CardTitle className="text-foreground">{assignment.title}</CardTitle>
+                          <CardDescription className="mt-2 text-muted-foreground">
                             {assignment.description}
                           </CardDescription>
                         </div>
                         <div className="flex items-center gap-2">
                           {assignment.due_date && (
-                            <Badge variant="outline" className="flex items-center gap-1">
+                            <Badge variant="outline" className="flex items-center gap-1 border-warning/30 text-warning">
                               <Clock className="h-3 w-3" />
                               Due {format(new Date(assignment.due_date), 'MMM dd')}
                             </Badge>
                           )}
-                          <Badge className="bg-success">
-                            {assignment.eco_points_reward} points
+                          <Badge className="bg-gradient-eco text-white shadow-gentle">
+                            🏆 {assignment.eco_points_reward} points
                           </Badge>
                         </div>
                       </div>
                     </CardHeader>
                     <CardContent>
                         <Button 
-                          variant="outline" 
-                          className="flex items-center gap-2"
+                          className="bg-gradient-sky hover:shadow-eco text-white transition-all flex items-center gap-2"
                           onClick={() => setSelectedAssignment(assignment)}
                         >
                           <Upload className="h-4 w-4" />
-                          Submit Assignment
+                          Submit Assignment 📤
                         </Button>
                     </CardContent>
                   </Card>
                 ))}
                 {assignments.length === 0 && (
-                  <Card>
-                    <CardContent className="text-center py-8">
-                      <BookOpen className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                      <p className="text-muted-foreground">No assignments available yet.</p>
+                  <Card className="bg-gradient-sky/10 border-info/30">
+                    <CardContent className="text-center py-12">
+                      <div className="p-4 bg-gradient-sky rounded-full w-fit mx-auto mb-4">
+                        <BookOpen className="h-12 w-12 text-white" />
+                      </div>
+                      <p className="text-lg font-semibold text-info mb-2">No assignments available yet</p>
+                      <p className="text-muted-foreground">Check back later for exciting eco-challenges! 🌟</p>
                     </CardContent>
                   </Card>
                 )}

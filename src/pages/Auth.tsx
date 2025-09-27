@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { Leaf, Users, GraduationCap, Building2 } from 'lucide-react';
+import { Leaf, Users, GraduationCap, Building2, ArrowLeft } from 'lucide-react';
 import { z } from 'zod';
 
 const signUpSchema = z.object({
@@ -28,6 +28,7 @@ const signInSchema = z.object({
 export default function Auth() {
   const { user, signIn, signUp } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   // Redirect if already authenticated
@@ -127,7 +128,16 @@ export default function Auth() {
   return (
     <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 relative">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/')}
+            className="absolute -top-4 left-0 text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/10"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Home
+          </Button>
           <div className="flex items-center justify-center gap-2 mb-4">
             <Leaf className="h-8 w-8 text-primary-foreground" />
             <h1 className="text-3xl font-bold text-primary-foreground">EcoLearn</h1>

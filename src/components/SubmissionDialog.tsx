@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, Send } from 'lucide-react';
+import { Upload, Send, FileImage, X } from 'lucide-react';
 
 interface Assignment {
   id: string;
@@ -32,25 +32,83 @@ export default function SubmissionDialog({
   const { profile } = useAuth();
   const { toast } = useToast();
   const [submitting, setSubmitting] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Check file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Please select a file smaller than 10MB",
+          variant: "destructive",
+        });
+        return;
+      }
+      setSelectedFile(file);
+    }
+  };
+
+  const uploadFile = async (file: File): Promise<string | null> => {
+    if (!profile?.user_id) return null;
+    
+    setUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${profile.user_id}/${Date.now()}.${fileExt}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('submissions')
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage
+        .from('submissions')
+        .getPublicUrl(fileName);
+
+      return data.publicUrl;
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      toast({
+        title: "Upload failed",
+        description: "Failed to upload file. Please try again.",
+        variant: "destructive",
+      });
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitting(true);
 
     const formData = new FormData(e.currentTarget);
-    const data = {
-      content: formData.get('content') as string,
-      file_url: formData.get('file_url') as string,
-    };
+    const content = formData.get('content') as string;
 
     try {
+      let fileUrl: string | null = null;
+      
+      // Upload file if selected
+      if (selectedFile) {
+        fileUrl = await uploadFile(selectedFile);
+        if (!fileUrl) {
+          setSubmitting(false);
+          return;
+        }
+      }
+
       const { error } = await supabase
         .from('submissions')
         .insert({
           assignment_id: assignment.id,
           student_id: profile?.user_id,
-          content: data.content,
-          file_url: data.file_url || null,
+          content,
+          file_url: fileUrl,
         });
 
       if (error) throw error;
@@ -74,6 +132,8 @@ export default function SubmissionDialog({
         }
       }
 
+      // Reset form
+      setSelectedFile(null);
       onOpenChange(false);
       onSubmissionComplete();
     } catch (error) {
@@ -111,16 +171,44 @@ export default function SubmissionDialog({
           </div>
           
           <div>
-            <Label htmlFor="file_url">Supporting File/Image URL (Optional)</Label>
-            <Input
-              id="file_url"
-              name="file_url"
-              type="url"
-              placeholder="https://example.com/your-project-image.jpg"
-            />
-            <p className="text-xs text-muted-foreground mt-1">
-              Upload your files to any cloud service and paste the link here
-            </p>
+            <Label htmlFor="file-upload">Attach File or Image (Optional)</Label>
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => document.getElementById('file-input')?.click()}
+                  disabled={uploading}
+                  className="flex items-center gap-2"
+                >
+                  <FileImage className="h-4 w-4" />
+                  Choose File
+                </Button>
+                <Input
+                  id="file-input"
+                  type="file"
+                  onChange={handleFileSelect}
+                  accept="image/*,.pdf,.doc,.docx,.txt"
+                  className="hidden"
+                />
+                {selectedFile && (
+                  <div className="flex items-center gap-2 bg-muted px-3 py-2 rounded-md">
+                    <span className="text-sm text-muted-foreground">{selectedFile.name}</span>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSelectedFile(null)}
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </div>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Supported formats: Images, PDF, Word documents, Text files (Max 10MB)
+              </p>
+            </div>
           </div>
           
           <div className="bg-muted p-4 rounded-lg">
@@ -134,11 +222,11 @@ export default function SubmissionDialog({
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" variant="eco" disabled={submitting} className="flex-1">
-              {submitting ? (
+            <Button type="submit" variant="eco" disabled={submitting || uploading} className="flex-1">
+              {submitting || uploading ? (
                 <>
                   <Upload className="h-4 w-4 mr-2 animate-spin" />
-                  Submitting...
+                  {uploading ? 'Uploading...' : 'Submitting...'}
                 </>
               ) : (
                 <>
